@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="Exam Answers, Quiz Assistance, Mock Exams, Test Preparation Tips">
+  <meta name="keywords" content="Exam, Assistance, Quiz, Answers, Test Preparation, Study Resources">
+  <meta name="AHUEKWE PRECIOUS MADUABUCHI" content="EDUMAGICIA">
+  <meta name="description" content="Get top-notch exam assistance, answers, and quizzes. Prepare with our comprehensive resources and succeed in your studies.">
+  <title>P LEARNIFY - Homepage</title>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
+  
+  
+  <link id="favicon" rel="icon" type="image/png" href="fav2.png">
+  
+  
+  <style>
+    /* Basic reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* Body background and flex container */
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://media.tenor.com/ApHKBHuwEpYAAAAj/study-midterms.gif') no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      background: linear-gradient(45deg, #6a11cb, #2575fc);
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding: 1rem;
+      z-index: 100;
+    }
+    .navbar-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+    }
+    .navbar-links {
+      list-style: none;
+      display: flex;
+      gap: 1em;
+    }
+    .navbar-links li a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+    .hamburger-menu {
+      display: none;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+
+    /* Drawer Menu */
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -250px;
+      width: 250px;
+      height: 100%;
+      background: linear-gradient(45deg, #6a11cb, #2575fc);
+      color: white;
+      transition: right 0.3s ease-in-out;
+      padding-top: 2em;
+      box-shadow: -4px 0 8px rgba(0, 0, 0, 0.5);
+    }
+    .drawer.open {
+      right: 0;
+    }
+    .drawer ul {
+      list-style: none;
+      padding-left: 20px;
+    }
+    .drawer ul li {
+      margin-bottom: 1em;
+    }
+    .drawer ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2em;
+    }
+
+    /* Main Homepage Container */
+    .homepage-container {
+      margin-top: 80px;
+      padding: 2em;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 1100px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Exam Cards Section */
+    .exam-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-evenly;
+    }
+    .exam-card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      width: 250px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+    .exam-card:hover {
+      transform: scale(1.05);
+    }
+    .exam-logo {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+    .exam-name {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+    .users-count {
+      font-size: 1em;
+      color: #888;
+    }
+    .exam-btn {
+      background: linear-gradient(45deg, #6a11cb, #2575fc);
+      color: white;
+      padding: 10px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    /* Footer */
+     footer {
+      text-align: center;
+      margin-top: 2em;
+      font-size: 0.9em;
+      color: #777;
+      
+    } 
+
+    /* Media Queries for Drawer Menu */
+    @media (max-width: 768px) {
+      .hamburger-menu {
+        display: block;
+      }
+      .navbar-links {
+        display: none;
+      }
+      .homepage-container {
+        padding: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+  <div class="navbar-container">
+    <div class="logo">EDUMAGICIA</div>
+    <ul class="navbar-links">
+      <li><a href="news.html"> Exam Answers </a>  </li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="login.html" onclick="logout()">Logout</a></li>
+    </ul>
+    <div class="hamburger-menu" onclick="toggleDrawer()">☰</div>
+  </div>
+</nav>
+
+<!-- Drawer Menu -->
+<div class="drawer" id="drawer">
+  <ul>
+    <li><a href="profile.html">Profile</a></li>
+    <li><a href="login.html" onclick="logout()">Logout</a></li>
+    <li><a href="profile.html"> Profile </a></li>
+    <li><a href="https://wa.me/+2348128885606"> Admin </a></li>
+    <li><a href="news.html"> Exam Answers </a>  </li>
+  </ul>
+</div>
+
+<!-- Homepage Container -->
+<div class="homepage-container">
+  <!-- Welcome Message -->
+ <div class="welcome-message">
+      <h2>Welcome, <span id="userName">User</span></h2>
+    <p>Choose an exam to start:</p>
+  </div>
+
+  <!-- Exam Cards Section -->
+  <div class="exam-cards">
+    <!-- WAEC Exam Card -->
+    <div class="exam-card">
+      <img src="https://www.waec.org/assets/2.0/icons/logo.svg" alt="WAEC Logo" class="exam-logo">
+      <div class="exam-name">WAEC</div>
+      <div class="users-count">Logged in: 125 users today</div>
+     <a href="jambsplash.html"> <button class="exam-btn" onclick="startExam('WAEC')">Start WAEC Exam</button> </a>
+    </div>
+    <!-- NECO Exam Card -->
+    <div class="exam-card">
+      <img src="https://neco.gov.ng/assets/neco-logo.df6f9256.png" alt="NECO Logo" class="exam-logo">
+      <div class="exam-name">NECO</div>
+      <div class="users-count">Logged in: 98 users today</div>
+     <a href="jambsplash.html"> <button class="exam-btn" onclick="startExam('NECO')">Start NECO Exam</button> </a>
+    </div>
+    <!-- JAMB Exam Card -->
+    <div class="exam-card">
+      <img src="https://upload.wikimedia.org/wikipedia/en/2/2e/Official_JAMB_logo.png" alt="JAMB Logo" class="exam-logo">
+      <div class="exam-name">JAMB</div>
+      <div class="users-count">Logged in: 200 users today</div>
+   <a href="jambsplash.html">  <button class="exam-btn" onclick="startExam('JAMB')">Start JAMB Exam</button> </a>
+    </div>
+    <!-- NATEB Exam Card -->
+    <div class="exam-card">
+      <img src="https://nabteb.gov.ng/wp-content/uploads/2021/09/logo.png" alt="NABTEB Logo" class="exam-logo">
+      <div class="exam-name">NABTEB</div>
+      <div class="users-count">Logged in: 54 users today</div>
+  <a href="jambsplash.html">    <button class="exam-btn" onclick="startExam('NATEB')">Start NATEB Exam</button> </a>
+    </div>
+    <!-- GST Exam Card -->
+    <div class="exam-card">
+      <img src="https://t3.ftcdn.net/jpg/05/44/68/98/360_F_544689833_JkMgyV8S7YcmZEh3LbHTPwPSAPLsarLn.jpg" alt="GST Logo" class="exam-logo">
+      <div class="exam-name">GST</div>
+      <div class="users-count">Logged in: 150 users today</div>
+    <a href="jambsplash.html">  <button class="exam-btn" onclick="startExam('GST')">Start GST Exam</button> </a>
+    </div>
+    <!-- Post-UTME Exam Card -->
+    <div class="exam-card">
+      <img src="https://img.freepik.com/premium-vector/education-school-logo-design_586739-1335.jpg?w=740" alt="Post-UTME Logo" class="exam-logo">
+      <div class="exam-name">Post-UTME</div>
+      <div class="users-count">Logged in: 87 users today</div>
+ <a href="jambsplash.html">     <button class="exam-btn" onclick="startExam('Post-UTME')">Start Post-UTME Exam</button> </a>
+    </div>
+    <!-- NECO GCE Exam Card -->
+    <div class="exam-card">
+      <img src="https://neco.gov.ng/assets/neco-logo.df6f9256.png" alt="NECO GCE Logo" class="exam-logo">
+      <div class="exam-name">NECO GCE</div>
+      <div class="users-count">Logged in: 56 users today</div>
+   <a href="jambsplash.html">   <button class="exam-btn" onclick="startExam('NECO GCE')">Start NECO GCE Exam</button> </a>
+    </div>
+    <!-- BECE Exam Card -->
+    <div class="exam-card">
+      <img src="https://cdn-icons-png.flaticon.com/128/16893/16893981.png" alt="BECE Logo" class="exam-logo">
+      <div class="exam-name">BECE</div>
+      <div class="users-count">Logged in: 43 users today</div>
+   <a href="jambsplash.html">   <button class="exam-btn" onclick="startExam('BECE')">Start BECE Exam</button> </a>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<!-- <footer>
+ <!- <p>&copy; 2024 Edu Magicia. All rights reserved.</p>
+<!--  </footer> 
+
+<!-- Drawer Toggle Script -->
+<script>
+  // Drawer Toggle Function
+  function toggleDrawer() {
+    document.getElementById('drawer').classList.toggle('open');
+  }
+
+  // Logout function (you should integrate this with Firebase sign-out or your backend)
+  function logout() {
+    alert('You have logged out!');
+    window.location.href = 'login.html'; // Redirect to login page
+  }
+
+  // Start Exam Function (Redirect to respective exam page)
+ // function startExam(examName) {
+ //   window.location.href = examName.toLowerCase().replace(' ', '-') + '-exam.html';
+//  }
+</script>
+
+<script>
+    // Initialize Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDc8m_MYcbMgdEmd8-yVRxwgf2kG9ocMjc",
+    authDomain: "multimillion-cbcf2.firebaseapp.com",
+    projectId: "multimillion-cbcf2",
+    storageBucket: "multimillion-cbcf2.appspot.com",
+    messagingSenderId: "562515197040",
+    appId: "1:562515197040:web:fdbe3856149fe5985048b5",
+    databaseURL: "https://multimillion-cbcf2-default-rtdb.firebaseio.com/"
+  };
+  
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Display logged-in user's name or email
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // Display user’s display name if available, otherwise show their email
+        const userName = user.displayName || user.email;
+        document.getElementById("userName").textContent = userName;
+      } else {
+        // Redirect to login page if not logged in
+        window.location.href = 'login.html';
+      }
+    });
+    </script>
+    <script>
+      function updateFavicon() {
+    const currentHour = new Date().getHours();
+    const favicon = document.getElementById("favicon");
+
+    // Day hours: 6 AM (06:00) to 6 PM (18:00)
+    if (currentHour >= 6 && currentHour < 18) {
+        favicon.href = "fav2.png"; // Set to fav2.png during the day
+    } else {
+        favicon.href = "fav1.png"; // Set to fav1.png during the night
+    }
+}
+
+// Run the function once on page load
+updateFavicon();
+
+// Optional: Update the favicon dynamically every hour
+setInterval(updateFavicon, 60 * 60 * 1000); // Check every hour
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="Exam Answers, Quiz Assistance, Mock Exams, Test Preparation Tips">
+  <meta name="keywords" content="Exam, Assistance, Quiz, Answers, Test Preparation, Study Resources">
+  <meta name="AHUEKWE PRECIOUS MADUABUCHI" content="EDUMAGICIA">
+  <meta name="description" content="Get top-notch exam assistance, answers, and quizzes. Prepare with our comprehensive resources and succeed in your studies.">
+  <title>User Profile - Edu Magicia</title>
+  
+  <link id="favicon" rel="icon" type="image/png" href="fav2.png">
+  
+  <style>
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* Body and background */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      background-color: #333;
+      color: white;
+      padding: 1rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .navbar-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .navbar-links {
+      list-style: none;
+      display: flex;
+      gap: 1em;
+    }
+    .navbar-links li a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+
+    /* Profile container */
+    .profile-container {
+      width: 100%;
+      max-width: 800px;
+      background-color: white;
+      border-radius: 10px;
+      padding: 2em;
+      margin: 2em auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .profile-header {
+      text-align: center;
+      margin-bottom: 2em;
+    }
+    .profile-header img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+    .profile-header h2 {
+      font-size: 1.8em;
+      margin-bottom: 10px;
+    }
+    .profile-header p {
+      font-size: 1.2em;
+      color: #555;
+    }
+
+    /* Edit Form */
+    .profile-form input, .profile-form button {
+      width: 100%;
+      padding: 0.8em;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-size: 1em;
+    }
+    .profile-form button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1em;
+      transition: background 0.3s ease;
+    }
+    .profile-form button:hover {
+      background-color: #45a049;
+    }
+
+    /* Users Grid View */
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 3em;
+    }
+    .user-card {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .user-card p {
+      font-size: 1.1em;
+      color: #333;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 2em;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar --> 
+<nav> 
+  <div class="navbar-container"> 
+    <div class="logo">EDUMAGICIA</div> 
+    <ul class="navbar-links"> 
+      <li><a href="home.html">BACK</a></li> 
+      <li><a href="login.html" onclick="logout()">Logout</a></li> 
+    </ul> 
+  </div> 
+</nav> 
+ 
+<!-- Profile Container --> 
+<div class="profile-container"> 
+  <div class="profile-header"> 
+    <img id="profilePicture" src="https://cdn-icons-png.flaticon.com/128/18269/18269782.png" alt="Profile Picture"> 
+    <h2 id="username">First & Surname</h2> 
+    <p id="userEmail">user@example.com</p> 
+  </div> 
+
+  <!-- Edit Profile Form --> 
+  <div class="profile-form"> 
+    <h3>Edit Your Profile</h3> 
+    <input type="text" id="editName" placeholder="Full Name"> 
+    <input type="email" id="editEmail" placeholder="Email Address"> 
+    <input type="password" id="editPassword" placeholder="New Password"> 
+    <input type="file" id="editProfilePicture" accept="image/*"> 
+    <button onclick="saveProfileChanges()">Save Changes</button> 
+  </div> 
+</div> 
+
+<footer> 
+  <p>&copy; 2024 Edu Magicia. All rights reserved.</p> 
+</footer> 
+
+<!-- Firebase SDK and Script --> 
+<script type="module"> 
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"; 
+  import { getAuth, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; 
+  import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"; 
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"; 
+
+  const firebaseConfig = { 
+    apiKey: "AIzaSyDc8m_MYcbMgdEmd8-yVRxwgf2kG9ocMjc", 
+    authDomain: "multimillion-cbcf2.firebaseapp.com", 
+    projectId: "multimillion-cbcf2", 
+    storageBucket: "multimillion-cbcf2.appspot.com", 
+    messagingSenderId: "562515197040", 
+    appId: "1:562515197040:web:fdbe3856149fe5985048b5", 
+    databaseURL: "https://multimillion-cbcf2-default-rtdb.firebaseio.com/" 
+  }; 
+
+  const app = initializeApp(firebaseConfig); 
+  const auth = getAuth(app); 
+  const db = getFirestore(app); 
+  const storage = getStorage(app); 
+
+  async function saveProfileChanges() { 
+    const user = auth.currentUser; 
+    const fullName = document.getElementById("editName").value; 
+    const email = document.getElementById("editEmail").value; 
+    const password = document.getElementById("editPassword").value; 
+    const profilePicFile = document.getElementById("editProfilePicture").files[0]; 
+
+    const [firstName, ...surnameParts] = fullName.split(' '); 
+    const surname = surnameParts.join(' '); 
+
+    try { 
+      const userDocRef = doc(db, "users", user.uid); 
+
+      await updateDoc(userDocRef, { 
+        firstName, 
+        surname, 
+        email 
+      }); 
+
+      if (password) await updatePassword(user, password); 
+
+      if (profilePicFile) { 
+        const storageRef = ref(storage, `profile-pictures/${user.uid}`); 
+        await uploadBytes(storageRef, profilePicFile); 
+        const profilePicURL = await getDownloadURL(storageRef); 
+        await updateDoc(userDocRef, { profilePicture: profilePicURL }); 
+
+        // Update locally
+        document.getElementById("profilePicture").src = profilePicURL; 
+        localStorage.setItem("profilePicture", profilePicURL); 
+      } 
+
+      // Update locally
+      document.getElementById("username").innerText = `${firstName} ${surname}`; 
+      document.getElementById("userEmail").innerText = email; 
+      localStorage.setItem("username", `${firstName} ${surname}`); 
+      localStorage.setItem("email", email); 
+
+      alert("Profile updated successfully!"); 
+    } catch (error) { 
+      alert("Error updating profile: " + error.message); 
+    } 
+  } 
+
+  // Load from localStorage on page load
+  window.onload = () => { 
+    const storedName = localStorage.getItem("username"); 
+    const storedEmail = localStorage.getItem("email"); 
+    const storedPicture = localStorage.getItem("profilePicture"); 
+
+    if (storedName) document.getElementById("username").innerText = storedName; 
+    if (storedEmail) document.getElementById("userEmail").innerText = storedEmail; 
+    if (storedPicture) document.getElementById("profilePicture").src = storedPicture; 
+  }; 
+</script> 
+<script>
+  function updateFavicon() {
+    const currentHour = new Date().getHours();
+    const favicon = document.getElementById("favicon");
+
+    // Day hours: 6 AM (06:00) to 6 PM (18:00)
+    if (currentHour >= 6 && currentHour < 18) {
+        favicon.href = "fav2.png"; // Set to fav2.png during the day
+    } else {
+        favicon.href = "fav1.png"; // Set to fav1.png during the night
+    }
+}
+
+// Run the function once on page load
+updateFavicon();
+
+// Optional: Update the favicon dynamically every hour
+setInterval(updateFavicon, 60 * 60 * 1000); // Check every hour
+</script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Exam Answers, Quiz Assistance, Mock Exams, Test Preparation Tips">
+    <meta name="keywords" content="Exam, Assistance, Quiz, Answers, Test Preparation, Study Resources">
+    <meta name="AHUEKWE PRECIOUS MADUABUCHI" content="EDUMAGICIA">
+    <meta name="description" content="Get top-notch exam assistance, answers, and quizzes. Prepare with our comprehensive resources and succeed in your studies.">
+    <title>News Updates</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
+    <script type='text/javascript' src='//slushhelmetmirth.com/a6/aa/f0/a6aaf0870de26307bc3abe2c99b32a5d.js'></script>
+</head>
+<body>
+    <div class="loader" id="loader"></div>
+    <div class="news-container">
+        <header>
+            <h1>EDUMAGICIA</h1>
+        </header>
+        <main>
+            <section id="newsFeed">
+                <!-- News posts will be dynamically populated here -->
+            </section>
+        </main>
+    </div>
+    <script>
+      Parse.initialize("dN4IlwudsscbP0C5CtOmC8FhRGwKYsjs9okUACJr", "7lZX0V53fXZrXiXdu35W0bxkUtJL4Sqtkz8mrPXj");
+Parse.serverURL = 'https://parseapi.back4app.com';
+
+const loader = document.getElementById('loader');
+
+// Display loader
+function toggleLoader(show) {
+    loader.style.visibility = show ? 'visible' : 'hidden';
+}
+
+// Fetch and display news
+async function fetchNews() {
+    toggleLoader(true);
+    const query = new Parse.Query("News");
+    try {
+        const results = await query.find();
+        const newsFeed = document.getElementById('newsFeed');
+        newsFeed.innerHTML = results.map((news) => {
+            // Split the content into paragraphs
+            const content = news.get("content").split('\n').map(paragraph => `<p>${paragraph.trim()}</p>`).join('');
+            
+            return `
+            <div class="news-item" data-id="${news.id}">
+                <h3>${news.get("title")}</h3>
+                <div class="news-content">
+                    ${content}
+                </div>
+                ${news.get("images").map(img => `<img src="${img}" alt="News Image" class="news-image">`).join('')}
+                <div class="comments-section">
+                    <h4>Comments:</h4>
+                    <div class="comments" id="comments-${news.id}"></div>
+                    <form class="comment-form" onsubmit="addComment(event, '${news.id}')">
+                        <input type="text" placeholder="Write a comment..." required>
+                        <button type="submit">Post</button>
+                    </form>
+                </div>
+            </div>
+        `;}).join('');
+        results.forEach(news => fetchComments(news.id));
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+    toggleLoader(false);
+}
+
+// Fetch comments for a specific news post
+async function fetchComments(newsId) {
+    const Comment = Parse.Object.extend("Comment");
+    const query = new Parse.Query(Comment);
+    query.equalTo("newsId", newsId);
+    query.ascending("createdAt");
+
+    try {
+        const results = await query.find();
+        const commentsContainer = document.getElementById(`comments-${newsId}`);
+        commentsContainer.innerHTML = results.map(comment => `
+            <div class="comment-item" data-id="${comment.id}">
+                <p><strong>${comment.get("username")}:</strong> ${comment.get("content")}</p>
+                <button class="delete-comment" onclick="deleteComment('${comment.id}', '${newsId}')">Delete</button>
+            </div>
+        `).join('');
+    } catch (error) {
+        alert(`Error fetching comments: ${error.message}`);
+    }
+}
+
+// Add a new comment
+async function addComment(event, newsId) {
+    event.preventDefault();
+    const form = event.target;
+    const content = form.querySelector('input').value;
+
+    const Comment = Parse.Object.extend("Comment");
+    const comment = new Comment();
+    comment.set("newsId", newsId);
+    comment.set("username", "Anonymous"); // Replace with logged-in user info if applicable
+    comment.set("content", content);
+
+    try {
+        await comment.save();
+        form.reset();
+        fetchComments(newsId); // Refresh comments
+    } catch (error) {
+        alert(`Error adding comment: ${error.message}`);
+    }
+}
+
+// Delete a comment
+async function deleteComment(commentId, newsId) {
+    const Comment = Parse.Object.extend("Comment");
+    const query = new Parse.Query(Comment);
+
+    try {
+        const comment = await query.get(commentId);
+        await comment.destroy();
+        fetchComments(newsId); // Refresh comments
+    } catch (error) {
+        alert(`Error deleting comment: ${error.message}`);
+    }
+}
+
+// Initial fetch of news and comments
+fetchNews();
+    </script>
+    
+    
+    <script type='text/javascript' src='//slushhelmetmirth.com/39/2a/0d/392a0d28346a0e19cd71e87eccfdecf0.js'></script>
+    <script type='text/javascript' src='//slushhelmetmirth.com/39/2a/0d/392a0d28346a0e19cd71e87eccfdecf0.js'></script>
+    <script type='text/javascript' src='//slushhelmetmirth.com/39/2a/0d/392a0d28346a0e19cd71e87eccfdecf0.js'></script>
+    <script type='text/javascript' src='//slushhelmetmirth.com/39/2a/0d/392a0d28346a0e19cd71e87eccfdecf0.js'></script>
+    
+    
+    
+</body>
+</html>

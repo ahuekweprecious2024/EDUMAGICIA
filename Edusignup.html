@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P LEARNIFY</title>
+  <style>
+    /* Basic reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    /* Background with an overlay */
+    body {
+      background: url('https://media.tenor.com/ApHKBHuwEpYAAAAj/study-midterms.gif') no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      position: relative;
+    }
+    
+    .signup-container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 2em;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    /* Logo styling */
+    .logo {
+      width: 200px;
+      height: 200px;
+      margin-bottom: -50px;
+    }
+
+    .description {
+      font-size: 1em;
+      margin-bottom: 1.5em;
+      color: #555;
+    }
+
+    /* Input styling */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.8em;
+      margin: 0.5em 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    /* Submit button styling */
+    .signup-button {
+      width: 100%;
+      padding: 0.8em;
+      font-size: 1em;
+      color: #fff;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .signup-button:hover {
+      background-color: #45a049;
+    }
+    
+       /* Link to open login bottom sheet */
+    .login-link {
+      display: block;
+      margin-top: 1em;
+      color: #0066cc;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Bottom sheet styles */
+    .bottom-sheet {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      width: 100%;
+      background: #ffffff;
+      padding: 2em;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+      transition: bottom 0.1s ease-in-out;
+      max-width: 500px;
+      
+      margin: auto;
+    }
+
+    /* Show bottom sheet */
+    .bottom-sheet.show {
+      bottom: 0;
+    }
+
+    /* Close button */
+    .close-button {
+      text-align: right;
+      margin-bottom: 1em;
+      cursor: pointer;
+      color: #555;
+      font-weight: bold;
+    }
+    
+    /* FAB styling */
+    .fab {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: #25D366;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    /* Icon styling */
+    .fab img {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Tooltip styling */
+    .fab-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: 60px;
+      left: -10px;
+      background-color: #333;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-size: 14px;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Show tooltip on hover */
+    .fab:hover .fab-tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="signup-container">
+  <img src="icon3.png" alt="Mock Exam Logo" class="logo">
+  <p class="description">Join to access mock exams for WAEC, NECO, JAMB, and university GSTs.</p>
+
+  <!-- Signup Form -->
+  <form id="signupForm">
+    <input type="text" id="firstName" placeholder="Real First Name" required>
+    <input type="text" id="surname" placeholder="Real Surname" required>
+    <input type="text" id="regNumber" placeholder="Registration Number (optional)">
+    <input type="email" id="email" placeholder="Email Address" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit" class="signup-button">Sign Up</button>
+  </form>
+  <br>
+  
+
+ <!-- Link to open login bottom sheet -->
+  <span class="login-link" onclick="toggleBottomSheet()">Already have an account? Login</span>
+</div>
+
+<!-- Bottom Sheet for Login -->
+<div class="bottom-sheet" id="loginSheet">
+  <div class="close-button" onclick="toggleBottomSheet()">× Close</div>
+  <h3>Login to Your Account</h3>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email Address" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <button type="submit" class="signup-button">Login</button>
+  </form>
+</div>
+
+<!-- Floating Action Button (FAB) -->
+<a href="https://wa.me/+2348128885606" target="_blank" class="fab">
+  <img src="https://cdn-icons-png.flaticon.com/128/1384/1384079.png" alt="Chat Icon">
+  <span class="fab-tooltip">Need help? Chat with me</span>
+</a>
+
+<!-- Firebase SDK initialization with modules -->
+<script type="module">
+  // Import Firebase modules
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDc8m_MYcbMgdEmd8-yVRxwgf2kG9ocMjc",
+    authDomain: "multimillion-cbcf2.firebaseapp.com",
+    projectId: "multimillion-cbcf2",
+    storageBucket: "multimillion-cbcf2.appspot.com",
+    messagingSenderId: "562515197040",
+    appId: "1:562515197040:web:fdbe3856149fe5985048b5",
+    databaseURL: "https://multimillion-cbcf2-default-rtdb.firebaseio.com/"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Signup form submission handler
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const firstName = document.getElementById('firstName').value;
+    const surname = document.getElementById('surname').value;
+    const regNumber = document.getElementById('regNumber').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Save user data to Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        firstName,
+        surname,
+        regNumber,
+        email
+      });
+
+      alert('Signup successful! Your data has been saved.');
+      window.location.href = 'home.html'; // Redirect to home page
+      document.getElementById('signupForm').reset();
+    } catch (error) {
+      alert("Error signing up: " + error.message);
+    }
+  });
+  
+  
+  // Login form submission handler
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        alert('Login successful!');
+        toggleBottomSheet();
+        document.getElementById('loginForm').reset();
+      })
+      .catch((error) => {
+        alert("Error logging in: " + error.message);
+      });
+  });
+
+
+function toggleBottomSheet() {
+  console.log("Toggling bottom sheet");
+  document.getElementById('loginSheet').classList.toggle('show');
+}
+
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="Exam Answers, Quiz Assistance, Mock Exams, Test Preparation Tips">
+  <meta name="keywords" content="Exam, Assistance, Quiz, Answers, Test Preparation, Study Resources">
+  <meta name="AHUEKWE PRECIOUS MADUABUCHI" content="EDUMAGICIA">
+  <meta name="description" content="Get top-notch exam assistance, answers, and quizzes. Prepare with our comprehensive resources and succeed in your studies.">
+  <title>P LEARNIFY - EDUMAGICIA</title>
+  
+  <link id="favicon" rel="icon" type="image/png" href="fav2.png">
+  
+  <style>
+    /* Basic reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: url('https://media.tenor.com/ApHKBHuwEpYAAAAj/study-midterms.gif') no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 2em;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .logo { width: 200px; margin-bottom: -50px; }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%; padding: 0.8em; margin: 0.5em 0; border: 1px solid #ddd; border-radius: 5px;
+    }
+
+    .button {
+      width: 100%; 
+      padding: 0.8em; 
+      background: linear-gradient(45deg, #6a11cb, #2575fc); 
+      color: #fff; border: none;
+      border-radius: 5px; 
+      cursor: pointer; 
+      transition: background 0.3s ease;
+    }
+    
+    .button:hover { background-color: #45a049; }
+    
+    .login-link {
+      display: block; 
+      margin-top: 1em; 
+      color: #0066cc; 
+      cursor: pointer; 
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <img src="icon3.png" alt="Edu Magicia Logo" class="logo">
+  <p>Join to access mock exams for WAEC, NECO, JAMB, and university GSTs.</p>
+
+  <!-- Signup Form -->
+  <form id="signupForm">
+    <input type="text" id="firstName" placeholder="Real First Name" required>
+    <input type="text" id="surname" placeholder="Real Surname" required>
+    <input type="email" id="email" placeholder="Email Address" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit" class="button">Sign Up</button>
+  </form>
+  <a href="login.html" class="login-link">Already have an account? Login</a>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDc8m_MYcbMgdEmd8-yVRxwgf2kG9ocMjc",
+    authDomain: "multimillion-cbcf2.firebaseapp.com",
+    projectId: "multimillion-cbcf2",
+    storageBucket: "multimillion-cbcf2.appspot.com",
+    messagingSenderId: "562515197040",
+    appId: "1:562515197040:web:fdbe3856149fe5985048b5",
+    databaseURL: "https://multimillion-cbcf2-default-rtdb.firebaseio.com/"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const firstName = document.getElementById('firstName').value;
+    const surname = document.getElementById('surname').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "users", user.uid), { firstName, surname, email });
+      alert('Signup successful! Redirecting to home page.');
+      window.location.href = 'home.html';
+    } catch (error) {
+      alert("Signup failed: " + error.message);
+    }
+  });
+</script>
+<script>
+  function updateFavicon() {
+    const currentHour = new Date().getHours();
+    const favicon = document.getElementById("favicon");
+
+    // Day hours: 6 AM (06:00) to 6 PM (18:00)
+    if (currentHour >= 6 && currentHour < 18) {
+        favicon.href = "fav2.png"; // Set to fav2.png during the day
+    } else {
+        favicon.href = "fav1.png"; // Set to fav1.png during the night
+    }
+}
+
+// Run the function once on page load
+updateFavicon();
+
+// Optional: Update the favicon dynamically every hour
+setInterval(updateFavicon, 60 * 60 * 1000); // Check every hour
+</script>
+</body>
+</html>

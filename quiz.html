@@ -12,22 +12,38 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f4f4f9;
+      background: linear-gradient(135deg, #6200ea, #f4f4f9);
       color: #333;
     }
 
     .quiz-container {
-      max-width: 600px;
-      margin: 20px auto;
+      max-width: 700px;
+      margin: 40px auto;
       background: white;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quiz-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: url('https://via.placeholder.com/700x100/6200ea/fff?text=Wave+Edge') no-repeat;
+      background-size: cover;
+      z-index: -1;
     }
 
     h1 {
       text-align: center;
       margin-bottom: 20px;
+      font-size: 2.5rem;
+      color: #6200ea;
     }
 
     #question-box {
@@ -35,7 +51,7 @@
     }
 
     #question-number {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
       margin-bottom: 10px;
     }
@@ -47,6 +63,13 @@
     #options-container label {
       display: block;
       margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    #options-container label:hover {
+      background: #f1f1f1;
     }
 
     .quiz-navigation {
@@ -61,10 +84,12 @@
       border-radius: 5px;
       padding: 10px 15px;
       cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
     }
 
     button:hover {
       background: #4500b0;
+      transform: translateY(-2px);
     }
 
     button:disabled {
@@ -74,20 +99,69 @@
 
     #result-section {
       margin-top: 20px;
-      background: #f1f1f1;
-      padding: 15px;
-      border-radius: 5px;
-      display: none;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-out;
     }
 
     #result-section p {
       margin: 5px 0;
+      font-size: 1.2rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .info-card {
+      background: linear-gradient(135deg, #4500b0, #6200ea);
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    .info-card::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: url('https://via.placeholder.com/700x30/ffffff/6200ea?text=Wave') no-repeat;
+      background-size: cover;
+      z-index: 1;
     }
   </style>
 </head>
 <body>
   <div class="quiz-container">
     <h1>EDUMAGICIA</h1>
+    <div class="info-card">
+      <img src="https://img.icons8.com/?size=160&id=113085&format=png" alt="Quiz Logo">
+      <h2>Welcome to the Quiz Platform!</h2>
+      <p>Challenge yourself with our expertly crafted questions. Good luck!</p>
+    </div>
     <div id="question-box">
       <p id="question-number"></p>
       <p id="question-text"></p>
@@ -105,11 +179,7 @@
       <p id="incorrect-count"></p>
     </div>
   </div>
-  
-  
-  
-  
-  
+
   <script async="async" data-cfasync="false" src="//slushhelmetmirth.com/3cc61617ba2cfb0de73084609526dfed/invoke.js"></script>
 <div id="container-3cc61617ba2cfb0de73084609526dfed"></div>
   

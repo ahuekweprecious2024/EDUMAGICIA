@@ -8,7 +8,179 @@
     <meta name="AHUEKWE PRECIOUS MADUABUCHI" content="EDUMAGICIA">
     <meta name="description" content="Get top-notch exam assistance, answers, and quizzes. Prepare with our comprehensive resources and succeed in your studies.">
     <title>News Updates</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+      /* General body styling */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #f5f5f5, #dcdcdc);
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Loader Styling */
+.loader {
+    visibility: hidden;
+    width: 50px;
+    height: 50px;
+    margin: auto;
+    border: 6px solid #ccc;
+    border-top: 6px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* News container styling */
+.news-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Header styling */
+header {
+    text-align: center;
+    padding: 20px 0;
+    background: #4CAF50;
+    color: #fff;
+    border-radius: 8px 8px 0 0;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin: 0;
+}
+
+/* News feed styling */
+main {
+    padding: 20px;
+}
+
+#newsFeed {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* News item styling */
+.news-item {
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+}
+
+.news-item:hover {
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.news-item h3 {
+    margin-top: 0;
+    color: #4CAF50;
+}
+
+.news-content p {
+    margin: 10px 0;
+    color: #666;
+}
+
+/* News images */
+.news-image {
+    max-width: 100%;
+    height: auto;
+    margin-top: 15px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Comments section styling */
+.comments-section {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+.comments-section h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.comment-item {
+    background: #f1f1f1;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.comment-item p {
+    margin: 0;
+}
+
+.delete-comment {
+    background: transparent;
+    color: #d9534f;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* Comment form */
+.comment-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.comment-form input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.comment-form button {
+    padding: 10px 15px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.comment-form button:hover {
+    background: #45a049;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 15px;
+    background: #4CAF50;
+    color: #fff;
+    margin-top: 20px;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #newsFeed {
+        grid-template-columns: 1fr;
+    }
+}
+
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
     <script type='text/javascript' src='//slushhelmetmirth.com/a6/aa/f0/a6aaf0870de26307bc3abe2c99b32a5d.js'></script>
 </head>
@@ -136,7 +308,7 @@ fetchNews();
     <script type='text/javascript' src='//slushhelmetmirth.com/39/2a/0d/392a0d28346a0e19cd71e87eccfdecf0.js'></script>
     <script type='text/javascript' src='//slushhelmetmirth.com/39/2a/0d/392a0d28346a0e19cd71e87eccfdecf0.js'></script>
     
-    
+    <script type='text/javascript' src='//slushhelmetmirth.com/39/2a/0d/392a0d28346a0e19cd71e87eccfdecf0.js'></script>
     
 </body>
 </html>

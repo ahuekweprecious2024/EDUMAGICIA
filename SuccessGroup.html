@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Success Students Group</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.1/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.1/firebase-database-compat.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #f0f2f5;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        background-color: #128c7e;
+        color: white;
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .group-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 15px;
+        background-color: #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .group-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .group-info {
+        flex: 1;
+      }
+
+      .group-name {
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .group-members {
+        font-size: 13px;
+        opacity: 0.8;
+      }
+
+      .chat-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        background-image: url("https://web.whatsapp.com/img/bg-chat-tile-dark_a4be512e7195b6b733d9110b408f075d.png");
+        background-color: #e5ddd5;
+      }
+
+      .message {
+        max-width: 65%;
+        padding: 8px 12px;
+        margin-bottom: 12px;
+        border-radius: 7.5px;
+        position: relative;
+        word-wrap: break-word;
+      }
+
+      .admin-message {
+        background-color: #dcf8c6;
+        margin-left: auto;
+        border-top-right-radius: 0;
+      }
+
+      .user-message {
+        background-color: white;
+        margin-right: auto;
+        border-top-left-radius: 0;
+      }
+
+      .message-sender {
+        font-size: 13px;
+        font-weight: bold;
+        color: #128c7e;
+        margin-bottom: 2px;
+      }
+
+      .message-time {
+        font-size: 11px;
+        color: rgba(0, 0, 0, 0.45);
+        text-align: right;
+        margin-top: 4px;
+      }
+
+      .input-area {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        background-color: #f0f2f5;
+        position: sticky;
+        bottom: 0;
+      }
+
+      .formatting-toolbar {
+        display: flex;
+        padding: 5px 0;
+        margin-bottom: 8px;
+        overflow-x: auto;
+        gap: 10px;
+      }
+
+      .format-button {
+        background: none;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #555;
+        transition: background-color 0.2s;
+      }
+
+      .format-button:hover {
+        background-color: #e0e0e0;
+      }
+
+      .format-button.active {
+        background-color: #d1f1ea;
+        color: #128c7e;
+      }
+
+      .color-picker {
+        height: 30px;
+        border: none;
+        background: none;
+        cursor: pointer;
+      }
+
+      .font-selector {
+        height: 30px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: white;
+        padding: 0 5px;
+      }
+
+      .message-input-container {
+        display: flex;
+        align-items: flex-end;
+      }
+
+      .message-input {
+        flex: 1;
+        padding: 9px 12px;
+        border: none;
+        border-radius: 21px;
+        outline: none;
+        background-color: white;
+        font-size: 15px;
+        resize: none;
+        max-height: 150px;
+        overflow-y: auto;
+        min-height: 24px;
+      }
+
+      .send-button {
+        background-color: #128c7e;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin-left: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-end;
+      }
+
+      .send-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      /* Bottom Sheet Styles */
+      .bottom-sheet {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        padding: 20px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        transform: translateY(100%);
+        transition: transform 0.3s ease-out;
+        z-index: 1000;
+      }
+
+      .bottom-sheet.show {
+        transform: translateY(0);
+      }
+
+      .bottom-sheet h2 {
+        margin-bottom: 20px;
+        color: #128c7e;
+      }
+
+      .auth-input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      .auth-button {
+        background-color: #128c7e;
+        color: white;
+        border: none;
+        padding: 12px 15px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 999;
+      }
+
+      .overlay.show {
+        display: block;
+      }
+
+      .ad-container {
+        padding: 10px;
+        background-color: #f9f9f9;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .ad-container-bottom {
+        padding: 10px;
+        background-color: #f9f9f9;
+        text-align: center;
+        border-top: 1px solid #ddd;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+    <script
+      type="text/javascript"
+      src="//slushhelmetmirth.com/7a/ea/37/7aea374aead78bb3565a57a14614b80d.js"
+    ></script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="group-image">
+        <img
+          src="https://th.bing.com/th/id/OIP.aC4gnGWCONwjPbjb_0NOwwHaEc?rs=1&pid=ImgDetMain"
+          alt="Group Image"
+          onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 24 24%22><text x=%2250%%22 y=%2250%%22 font-size=%2216%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 fill=%22white%22>S</text></svg>'"
+        />
+      </div>
+      <div class="group-info">
+        <div class="group-name">2025 VIP WAEC/NECO/JAMB (EDUMAGICIA)</div>
+        <div class="group-members">312Million Group members</div>
+      </div>
+    </div>
+
+    <div class="ad-container">
+      <!-- Adsterra Ads Placeholder -->
+      <script
+        async="async"
+        data-cfasync="false"
+        src="//slushhelmetmirth.com/3cc61617ba2cfb0de73084609526dfed/invoke.js"
+      ></script>
+      <div id="container-3cc61617ba2cfb0de73084609526dfed"></div>
+      <div id="adsterra-top-ad">
+        <p style="color: #666">Advertisement Space (Adsterra)</p>
+      </div>
+    </div>
+
+    <div class="chat-container" id="chat-container">
+      <!-- Messages will be appended here dynamically -->
+    </div>
+
+    <div class="ad-container-bottom">
+      <script
+        async="async"
+        data-cfasync="false"
+        src="//slushhelmetmirth.com/3cc61617ba2cfb0de73084609526dfed/invoke.js"
+      ></script>
+      <div id="container-3cc61617ba2cfb0de73084609526dfed"></div>
+      <!-- Monetag Ads Placeholder -->
+      <div id="monetag-bottom-ad">
+        <p style="color: #666">Advertisement Space (Monetag)</p>
+      </div>
+    </div>
+
+    <div class="input-area" id="input-area">
+      <div class="formatting-toolbar" id="formatting-toolbar">
+        <button class="format-button" id="bold-button" title="Bold">
+          <i class="fas fa-bold"></i>
+        </button>
+        <button class="format-button" id="italic-button" title="Italic">
+          <i class="fas fa-italic"></i>
+        </button>
+        <button class="format-button" id="underline-button" title="Underline">
+          <i class="fas fa-underline"></i>
+        </button>
+        <select class="font-selector" id="font-selector" title="Font">
+          <option value="Arial">Arial</option>
+          <option value="Helvetica">Helvetica</option>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Courier New">Courier New</option>
+          <option value="Verdana">Verdana</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Comic Sans MS">Comic Sans MS</option>
+        </select>
+        <input
+          type="color"
+          class="color-picker"
+          id="color-picker"
+          value="#000000"
+          title="Text Color"
+        />
+        <button class="format-button" id="align-left" title="Align Left">
+          <i class="fas fa-align-left"></i>
+        </button>
+        <button class="format-button" id="align-center" title="Align Center">
+          <i class="fas fa-align-center"></i>
+        </button>
+        <button class="format-button" id="align-right" title="Align Right">
+          <i class="fas fa-align-right"></i>
+        </button>
+      </div>
+      <div class="message-input-container">
+        <div
+          class="message-input"
+          id="message-input"
+          contenteditable="true"
+          placeholder="Type a message"
+        ></div>
+        <button class="send-button" id="send-button" disabled>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="bottom-sheet" id="auth-sheet">
+      <h2>Authentication Required</h2>
+      <input
+        type="text"
+        class="auth-input"
+        id="auth-token"
+        placeholder="Enter your authorization token"
+      />
+      <button class="auth-button" id="auth-button">Authenticate</button>
+    </div>
+
+    <script
+      type="text/javascript"
+      src="//slushhelmetmirth.com/39/2a/0d/392a0d28346a0e19cd71e87eccfdecf0.js"
+    ></script>
+
+    <script>
+      // Initialize Firebase with your config
+      const firebaseConfig = {
+        apiKey: "AIzaSyDJP2XIR51qGTLINiKvEoscYTMt11CaZ5s",
+        authDomain: "paytrust-71e30.firebaseapp.com",
+        databaseURL: "https://paytrust-71e30-default-rtdb.firebaseio.com/",
+        projectId: "paytrust-71e30",
+        storageBucket: "paytrust-71e30.appspot.com",
+        messagingSenderId: "492609516838",
+        appId: "1:492609516838:android:5a924ad3b7e8e508fa3de7",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+      const messagesRef = database.ref("SuccessChat");
+
+      // DOM Elements
+      const chatContainer = document.getElementById("chat-container");
+      const messageInput = document.getElementById("message-input");
+      const sendButton = document.getElementById("send-button");
+      const inputArea = document.getElementById("input-area");
+      const authSheet = document.getElementById("auth-sheet");
+      const overlay = document.getElementById("overlay");
+      const authToken = document.getElementById("auth-token");
+      const authButton = document.getElementById("auth-button");
+
+      // Formatting Elements
+      const boldButton = document.getElementById("bold-button");
+      const italicButton = document.getElementById("italic-button");
+      const underlineButton = document.getElementById("underline-button");
+      const fontSelector = document.getElementById("font-selector");
+      const colorPicker = document.getElementById("color-picker");
+      const alignLeft = document.getElementById("align-left");
+      const alignCenter = document.getElementById("align-center");
+      const alignRight = document.getElementById("align-right");
+
+      // User variables
+      let isAdmin = false;
+      let isAuthenticated = false;
+      let currentUser = {
+        id: "user_" + Math.random().toString(36).substr(2, 9),
+        name: "Anonymous User",
+      };
+
+      // Set placeholder text for contentEditable div
+      messageInput.dataset.placeholder = "Type a message";
+
+      // Add CSS for placeholder
+      const style = document.createElement("style");
+      style.textContent = `
+        [contenteditable=true]:empty:before {
+          content: attr(placeholder);
+          color: #888;
+          font-style: italic;
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Show authentication bottom sheet on page load
+      window.onload = function () {
+        showAuthSheet();
+      };
+
+      // Function to show authentication bottom sheet
+      function showAuthSheet() {
+        authSheet.classList.add("show");
+        overlay.classList.add("show");
+      }
+
+      // Function to hide authentication bottom sheet
+      function hideAuthSheet() {
+        authSheet.classList.remove("show");
+        overlay.classList.remove("show");
+      }
+
+      // Authenticate user
+      authButton.addEventListener("click", function () {
+        const token = authToken.value.trim();
+
+        if (token === "ADMINGLORDVIP2025") {
+          isAdmin = true;
+          isAuthenticated = true;
+          currentUser.name = "Admin";
+          inputArea.classList.remove("hidden");
+          hideAuthSheet();
+          showAdminWelcomeMessage();
+        } else if (token === "GLORD2025") {
+          isAdmin = false;
+          isAuthenticated = true;
+          hideAuthSheet();
+          inputArea.classList.add("hidden");
+          showUserWelcomeMessage();
+        } else {
+          alert("Invalid token. Please try again.");
+          authToken.value = "";
+        }
+
+        // Start listening for messages
+        loadMessages();
+      });
+
+      // Check if input is empty to enable/disable send button
+      messageInput.addEventListener("input", function () {
+        if (this.textContent.trim().length > 0) {
+          sendButton.disabled = false;
+        } else {
+          sendButton.disabled = true;
+        }
+      });
+
+      // Send message when send button is clicked
+      sendButton.addEventListener("click", sendMessage);
+
+      // Handle Enter key for next paragraph instead of sending
+      messageInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          // Only send if Ctrl+Enter is pressed
+          if (e.ctrlKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+          // Otherwise, just let the default behavior happen (new line)
+        }
+      });
+
+      // Text formatting buttons
+      boldButton.addEventListener("click", function () {
+        document.execCommand("bold", false, null);
+        this.classList.toggle("active");
+        messageInput.focus();
+      });
+
+      italicButton.addEventListener("click", function () {
+        document.execCommand("italic", false, null);
+        this.classList.toggle("active");
+        messageInput.focus();
+      });
+
+      underlineButton.addEventListener("click", function () {
+        document.execCommand("underline", false, null);
+        this.classList.toggle("active");
+        messageInput.focus();
+      });
+
+      fontSelector.addEventListener("change", function () {
+        document.execCommand("fontName", false, this.value);
+        messageInput.focus();
+      });
+
+      colorPicker.addEventListener("input", function () {
+        document.execCommand("foreColor", false, this.value);
+        messageInput.focus();
+      });
+
+      alignLeft.addEventListener("click", function () {
+        document.execCommand("justifyLeft", false, null);
+        removeActiveClassFromAlignButtons();
+        this.classList.add("active");
+        messageInput.focus();
+      });
+
+      alignCenter.addEventListener("click", function () {
+        document.execCommand("justifyCenter", false, null);
+        removeActiveClassFromAlignButtons();
+        this.classList.add("active");
+        messageInput.focus();
+      });
+
+      alignRight.addEventListener("click", function () {
+        document.execCommand("justifyRight", false, null);
+        removeActiveClassFromAlignButtons();
+        this.classList.add("active");
+        messageInput.focus();
+      });
+
+      function removeActiveClassFromAlignButtons() {
+        alignLeft.classList.remove("active");
+        alignCenter.classList.remove("active");
+        alignRight.classList.remove("active");
+      }
+
+      // Function to send message
+      function sendMessage() {
+        // Get HTML content from contentEditable div
+        const messageHTML = messageInput.innerHTML.trim();
+
+        if (messageHTML.length > 0 && isAdmin) {
+          const timestamp = new Date().getTime();
+
+          messagesRef.push({
+            html: messageHTML, // Store the formatted HTML
+            senderId: currentUser.id,
+            senderName: currentUser.name,
+            timestamp: timestamp,
+            isAdmin: isAdmin,
+          });
+
+          // Clear the input field
+          messageInput.innerHTML = "";
+          sendButton.disabled = true;
+
+          // Reset formatting button states
+          boldButton.classList.remove("active");
+          italicButton.classList.remove("active");
+          underlineButton.classList.remove("active");
+          removeActiveClassFromAlignButtons();
+          alignLeft.classList.add("active");
+
+          // Scroll to bottom after sending
+          setTimeout(() => {
+            scrollToBottom();
+          }, 100);
+        }
+      }
+
+      // Function to add message to chat
+      function addMessageToChat(message) {
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message");
+
+        const isCurrentUserAdmin = message.isAdmin === true;
+
+        // Add appropriate class based on sender
+        if (isCurrentUserAdmin) {
+          messageElement.classList.add("admin-message");
+        } else {
+          messageElement.classList.add("user-message");
+        }
+
+        // Format timestamp
+        const date = new Date(message.timestamp);
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+        const formattedTime = `${hours}:${minutes}`;
+
+        // Create message content - use HTML if available, otherwise use text
+        if (message.html) {
+          messageElement.innerHTML = `
+                <div class="message-sender">${message.senderName}</div>
+                <div class="message-text">${message.html}</div>
+                <div class="message-time">${formattedTime}</div>
+            `;
+        } else {
+          messageElement.innerHTML = `
+                <div class="message-sender">${message.senderName}</div>
+                <div class="message-text">${formatMessageText(
+                  message.text || ""
+                )}</div>
+                <div class="message-time">${formattedTime}</div>
+            `;
+        }
+
+        chatContainer.appendChild(messageElement);
+        scrollToBottom();
+      }
+
+      // Function to format message text (preserve line breaks)
+      function formatMessageText(text) {
+        return text.replace(/\n/g, "<br>");
+      }
+
+      // Function to load messages from Firebase
+      function loadMessages() {
+        messagesRef.on("child_added", function (snapshot) {
+          const message = snapshot.val();
+
+          // Only admins can send messages, but everyone can view
+          addMessageToChat(message);
+        });
+      }
+
+      // Function to scroll chat to bottom
+      function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      // Function to show welcome message for admin
+      function showAdminWelcomeMessage() {
+        const adminWelcomeMsg = {
+          html: "<span style='color:#128c7e;'>Welcome Admin! You can now send messages to the group.<br>Use <b>Ctrl+Enter</b> to send a message.</span>",
+          senderId: "system",
+          senderName: "System",
+          timestamp: new Date().getTime(),
+          isAdmin: true,
+        };
+        addMessageToChat(adminWelcomeMsg);
+      }
+
+      // Function to show welcome message for regular user
+      function showUserWelcomeMessage() {
+        const userWelcomeMsg = {
+          html: "<span style='color:#128c7e;'>Welcome to EDUMAGICIA group! You can view admin messages here.</span>",
+          senderId: "system",
+          senderName: "System",
+          timestamp: new Date().getTime(),
+          isAdmin: true,
+        };
+        addMessageToChat(userWelcomeMsg);
+      }
+    </script>
+  </body>
+</html>

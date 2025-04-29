@@ -3,408 +3,941 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Success Students Group</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.1/firebase-app-compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.1/firebase-database-compat.min.js"></script>
+    <title>EDUMAGICIA | Premium WAEC/NECO/JAMB Resources</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
     />
     <style>
+      :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --secondary: #f59e0b;
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --gray: #94a3b8;
+        --success: #10b981;
+        --danger: #ef4444;
+        --radius: 12px;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: Arial, sans-serif;
       }
 
       body {
-        background-color: #f0f2f5;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
+        font-family: "Poppins", sans-serif;
+        background-color: #f1f5f9;
+        color: var(--dark);
+        line-height: 1.6;
       }
 
-      .header {
-        background-color: #128c7e;
-        color: white;
-        padding: 10px 16px;
-        display: flex;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-      }
-
-      .group-image {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 15px;
-        background-color: #ddd;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
-
-      .group-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      .group-info {
-        flex: 1;
-      }
-
-      .group-name {
-        font-size: 16px;
-        font-weight: bold;
-      }
-
-      .group-members {
-        font-size: 13px;
-        opacity: 0.8;
-      }
-
-      .chat-container {
-        flex: 1;
-        overflow-y: auto;
-        padding: 16px;
-        background-image: url("https://web.whatsapp.com/img/bg-chat-tile-dark_a4be512e7195b6b733d9110b408f075d.png");
-        background-color: #e5ddd5;
-      }
-
-      .message {
-        max-width: 65%;
-        padding: 8px 12px;
-        margin-bottom: 12px;
-        border-radius: 7.5px;
-        position: relative;
-        word-wrap: break-word;
-      }
-
-      .admin-message {
-        background-color: #dcf8c6;
-        margin-left: auto;
-        border-top-right-radius: 0;
-      }
-
-      .user-message {
-        background-color: white;
-        margin-right: auto;
-        border-top-left-radius: 0;
-      }
-
-      .message-sender {
-        font-size: 13px;
-        font-weight: bold;
-        color: #128c7e;
-        margin-bottom: 2px;
-      }
-
-      .message-time {
-        font-size: 11px;
-        color: rgba(0, 0, 0, 0.45);
-        text-align: right;
-        margin-top: 4px;
-      }
-
-      .input-area {
-        display: flex;
-        flex-direction: column;
-        padding: 10px;
-        background-color: #f0f2f5;
-        position: sticky;
-        bottom: 0;
-      }
-
-      .formatting-toolbar {
-        display: flex;
-        padding: 5px 0;
-        margin-bottom: 8px;
-        overflow-x: auto;
-        gap: 10px;
-      }
-
-      .format-button {
-        background: none;
-        border: none;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        color: #555;
-        transition: background-color 0.2s;
-      }
-
-      .format-button:hover {
-        background-color: #e0e0e0;
-      }
-
-      .format-button.active {
-        background-color: #d1f1ea;
-        color: #128c7e;
-      }
-
-      .color-picker {
-        height: 30px;
-        border: none;
-        background: none;
-        cursor: pointer;
-      }
-
-      .font-selector {
-        height: 30px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: white;
-        padding: 0 5px;
-      }
-
-      .message-input-container {
-        display: flex;
-        align-items: flex-end;
-      }
-
-      .message-input {
-        flex: 1;
-        padding: 9px 12px;
-        border: none;
-        border-radius: 21px;
-        outline: none;
-        background-color: white;
-        font-size: 15px;
-        resize: none;
-        max-height: 150px;
-        overflow-y: auto;
-        min-height: 24px;
-      }
-
-      .send-button {
-        background-color: #128c7e;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        margin-left: 10px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        align-self: flex-end;
-      }
-
-      .send-button:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-      }
-
-      /* Bottom Sheet Styles */
-      .bottom-sheet {
+      /* Auth Overlay */
+      .auth-overlay {
         position: fixed;
-        bottom: 0;
+        top: 0;
         left: 0;
         right: 0;
-        background-color: white;
-        padding: 20px;
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-        transform: translateY(100%);
-        transition: transform 0.3s ease-out;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
         z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: var(--transition);
       }
 
-      .bottom-sheet.show {
+      .auth-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .auth-container {
+        background: white;
+        border-radius: var(--radius);
+        width: 90%;
+        max-width: 450px;
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        transform: translateY(20px);
+        transition: var(--transition);
+      }
+
+      .auth-overlay.active .auth-container {
         transform: translateY(0);
       }
 
-      .bottom-sheet h2 {
-        margin-bottom: 20px;
-        color: #128c7e;
+      .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
       }
 
-      .auth-input {
+      .auth-header img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 1rem;
+        border: 3px solid var(--primary);
+      }
+
+      .auth-header h1 {
+        font-family: "Playfair Display", serif;
+        color: var(--primary);
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .auth-header p {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      .auth-form .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .auth-form label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark);
+      }
+
+      .auth-form input {
         width: 100%;
-        padding: 12px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
+        padding: 0.8rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        transition: var(--transition);
       }
 
-      .auth-button {
-        background-color: #128c7e;
+      .auth-form input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .auth-form button {
+        width: 100%;
+        padding: 0.8rem;
+        background: var(--primary);
         color: white;
         border: none;
-        padding: 12px 15px;
-        border-radius: 5px;
-        font-size: 16px;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        font-weight: 500;
         cursor: pointer;
-        width: 100%;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
       }
 
-      .overlay {
+      .auth-form button:hover {
+        background: var(--primary-dark);
+      }
+
+      .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--gray);
+      }
+
+      /* Main Layout */
+      .container {
+        display: none;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .container.active {
+        display: block;
+      }
+
+      /* Header */
+      .main-header {
+        background: white;
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        padding: 1rem 0;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        text-decoration: none;
+      }
+
+      .logo img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .logo-text h1 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.5rem;
+        color: var(--primary);
+        line-height: 1.2;
+      }
+
+      .logo-text span {
+        font-size: 0.8rem;
+        color: var(--secondary);
+        font-weight: 500;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .user-info .admin-badge {
+        background: var(--secondary);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: none;
+      }
+
+      .user-info .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      /* Main Content */
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem 0;
+      }
+
+      @media (min-width: 992px) {
+        .main-content {
+          grid-template-columns: 1fr 300px;
+        }
+      }
+
+      /* Posts Section */
+      .posts-section {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .section-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .section-header h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.5rem;
+        color: var(--dark);
+      }
+
+      .section-header .btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .section-header .btn:hover {
+        background: var(--primary-dark);
+      }
+
+      .posts-container {
+        padding: 1.5rem;
+      }
+
+      .post {
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 2rem;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .post:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .post-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        gap: 0.8rem;
+      }
+
+      .post-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      .post-meta h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .post-meta .post-date {
+        font-size: 0.8rem;
+        color: var(--gray);
+      }
+
+      .post-content {
+        margin-bottom: 1rem;
+      }
+
+      .post-text {
+        line-height: 1.7;
+        margin-bottom: 1rem;
+      }
+
+      .post-image {
+        margin: 1rem 0;
+        border-radius: var(--radius);
+        overflow: hidden;
+        max-height: 400px;
+      }
+
+      .post-image img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: var(--radius);
+        transition: var(--transition);
+        cursor: zoom-in;
+      }
+
+      .post-image img:hover {
+        transform: scale(1.02);
+      }
+
+      .post-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .post-actions .btn {
+        background: none;
+        border: none;
+        color: var(--gray);
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .post-actions .btn:hover {
+        color: var(--primary);
+      }
+
+      /* Sidebar */
+      .sidebar {
+        display: none;
+      }
+
+      @media (min-width: 992px) {
+        .sidebar {
+          display: block;
+        }
+      }
+
+      .sidebar-card {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .sidebar-card h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: var(--dark);
+        border-bottom: 2px solid var(--primary);
+        padding-bottom: 0.5rem;
+      }
+
+      .about-content {
+        font-size: 0.9rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 0.8rem;
+        background: #f8fafc;
+        border-radius: var(--radius);
+      }
+
+      .stat-item .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .stat-item .stat-label {
+        font-size: 0.8rem;
+        color: var(--gray);
+      }
+
+      /* Compose Modal */
+      .compose-modal {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: none;
-        z-index: 999;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: var(--transition);
       }
 
-      .overlay.show {
+      .compose-modal.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .compose-container {
+        background: white;
+        border-radius: var(--radius);
+        width: 90%;
+        max-width: 600px;
+        box-shadow: var(--shadow);
+        transform: translateY(20px);
+        transition: var(--transition);
+      }
+
+      .compose-modal.active .compose-container {
+        transform: translateY(0);
+      }
+
+      .compose-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .compose-header h3 {
+        font-size: 1.2rem;
+        color: var(--dark);
+      }
+
+      .compose-header .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--gray);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .compose-header .close-btn:hover {
+        color: var(--danger);
+      }
+
+      .compose-body {
+        padding: 1.5rem;
+      }
+
+      .compose-form .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .compose-form label {
         display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark);
       }
 
-      .ad-container {
-        padding: 10px;
-        background-color: #f9f9f9;
+      .compose-form .editor-toolbar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .compose-form .editor-toolbar button {
+        background: #f1f5f9;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .compose-form .editor-toolbar button:hover {
+        background: #e2e8f0;
+      }
+
+      .compose-form .editor-toolbar button.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .compose-form .message-input {
+        width: 100%;
+        min-height: 200px;
+        padding: 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        resize: vertical;
+      }
+
+      .compose-form .message-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .compose-form .image-url-input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        margin-top: 1rem;
+      }
+
+      .compose-form .image-url-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .compose-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+
+      .compose-footer .btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: var(--radius);
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .compose-footer .btn-cancel {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: var(--dark);
+      }
+
+      .compose-footer .btn-cancel:hover {
+        background: #e2e8f0;
+      }
+
+      .compose-footer .btn-submit {
+        background: var(--primary);
+        border: 1px solid var(--primary);
+        color: white;
+      }
+
+      .compose-footer .btn-submit:hover {
+        background: var(--primary-dark);
+      }
+
+      /* Image Modal */
+      .image-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1001;
+        opacity: 0;
+        pointer-events: none;
+        transition: var(--transition);
+      }
+
+      .image-modal.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .image-modal-content {
+        max-width: 90%;
+        max-height: 90%;
+      }
+
+      .image-modal-content img {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: var(--radius);
+      }
+
+      .image-modal-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .image-modal-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Empty State */
+      .empty-state {
         text-align: center;
-        border-bottom: 1px solid #ddd;
+        padding: 3rem 1rem;
+        color: var(--gray);
       }
 
-      .ad-container-bottom {
-        padding: 10px;
-        background-color: #f9f9f9;
-        text-align: center;
-        border-top: 1px solid #ddd;
+      .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #e2e8f0;
       }
 
-      .hidden {
-        display: none;
+      .empty-state h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .empty-state p {
+        font-size: 0.9rem;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+          gap: 1rem;
+          text-align: center;
+        }
+
+        .user-info {
+          margin-top: 0.5rem;
+        }
+
+        .section-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        .section-header .btn {
+          width: 100%;
+        }
       }
     </style>
-    <script
-      type="text/javascript"
-      src="//slushhelmetmirth.com/7a/ea/37/7aea374aead78bb3565a57a14614b80d.js"
-    ></script>
   </head>
   <body>
-    <div class="header">
-      <div class="group-image">
-        <img
-          src="https://th.bing.com/th/id/OIP.aC4gnGWCONwjPbjb_0NOwwHaEc?rs=1&pid=ImgDetMain"
-          alt="Group Image"
-          onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 24 24%22><text x=%2250%%22 y=%2250%%22 font-size=%2216%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 fill=%22white%22>S</text></svg>'"
-        />
-      </div>
-      <div class="group-info">
-        <div class="group-name">2025 VIP WAEC/NECO/JAMB (EDUMAGICIA)</div>
-        <div class="group-members">312Million Group members</div>
-      </div>
-    </div>
-
-    <div class="ad-container">
-      <!-- Adsterra Ads Placeholder -->
-      
-      <div id="adsterra-top-ad">
-        
-      </div>
-    </div>
-
-    <div class="chat-container" id="chat-container">
-      <!-- Messages will be appended here dynamically -->
-    </div>
-
-    <div class="ad-container-bottom">
-      
-      <!-- Monetag Ads Placeholder -->
-      <div id="monetag-bottom-ad">
-        
+    <!-- Authentication Overlay -->
+    <div class="auth-overlay active" id="authOverlay">
+      <div class="auth-container">
+        <div class="auth-header">
+          <img
+            src="https://th.bing.com/th/id/OIP.aC4gnGWCONwjPbjb_0NOwwHaEc?rs=1&pid=ImgDetMain"
+            alt="EDUMAGICIA Logo"
+          />
+          <h1>EDUMAGICIA</h1>
+          <p>Premium WAEC/NECO/JAMB Resources</p>
+        </div>
+        <form class="auth-form" id="authForm">
+          <div class="form-group">
+            <label for="authCode">Access Code</label>
+            <input
+              type="password"
+              id="authCode"
+              placeholder="Enter your access code"
+              required
+            />
+          </div>
+          <button type="submit" id="authButton">
+            <i class="fas fa-lock-open"></i> Unlock Content
+          </button>
+        </form>
+        <div class="auth-footer">
+          <p>Contact admin for access code</p>
+        </div>
       </div>
     </div>
 
-    <div class="input-area" id="input-area">
-      <div class="formatting-toolbar" id="formatting-toolbar">
-        <button class="format-button" id="bold-button" title="Bold">
-          <i class="fas fa-bold"></i>
-        </button>
-        <button class="format-button" id="italic-button" title="Italic">
-          <i class="fas fa-italic"></i>
-        </button>
-        <button class="format-button" id="underline-button" title="Underline">
-          <i class="fas fa-underline"></i>
-        </button>
-        <select class="font-selector" id="font-selector" title="Font">
-          <option value="Arial">Arial</option>
-          <option value="Helvetica">Helvetica</option>
-          <option value="Times New Roman">Times New Roman</option>
-          <option value="Courier New">Courier New</option>
-          <option value="Verdana">Verdana</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Comic Sans MS">Comic Sans MS</option>
-        </select>
-        <input
-          type="color"
-          class="color-picker"
-          id="color-picker"
-          value="#000000"
-          title="Text Color"
-        />
-        <button class="format-button" id="align-left" title="Align Left">
-          <i class="fas fa-align-left"></i>
-        </button>
-        <button class="format-button" id="align-center" title="Align Center">
-          <i class="fas fa-align-center"></i>
-        </button>
-        <button class="format-button" id="align-right" title="Align Right">
-          <i class="fas fa-align-right"></i>
-        </button>
-      </div>
-      <div class="message-input-container">
-        <div
-          class="message-input"
-          id="message-input"
-          contenteditable="true"
-          placeholder="Type a message"
-        ></div>
-        <button class="send-button" id="send-button" disabled>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="22" y1="2" x2="11" y2="13"></line>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-          </svg>
-        </button>
+    <!-- Main Container (hidden until authenticated) -->
+    <div class="container" id="mainContainer">
+      <!-- Header -->
+      <header class="main-header">
+        <div class="header-content container">
+          <a href="#" class="logo">
+            <img
+              src="https://th.bing.com/th/id/OIP.aC4gnGWCONwjPbjb_0NOwwHaEc?rs=1&pid=ImgDetMain"
+              alt="EDUMAGICIA Logo"
+            />
+            <div class="logo-text">
+              <h1>EDUMAGICIA</h1>
+              <span>Premium Exam Resources</span>
+            </div>
+          </a>
+          <div class="user-info">
+            <div class="admin-badge" id="adminBadge">
+              <i class="fas fa-crown"></i> Admin
+            </div>
+            <div class="user-avatar" id="userAvatar">U</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content container">
+        <!-- Posts Section -->
+        <section class="posts-section">
+          <div class="section-header">
+            <h2>Latest Resources</h2>
+            <button class="btn" id="newPostBtn" style="display: none">
+              <i class="fas fa-plus"></i> New Post
+            </button>
+          </div>
+          <div class="posts-container" id="postsContainer">
+            <div class="empty-state">
+              <i class="fas fa-book-open"></i>
+              <h3>No Resources Available</h3>
+              <p>
+                Check back later for updates or authenticate to view content
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="sidebar-card">
+            <h3>About EDUMAGICIA</h3>
+            <div class="about-content">
+              <p>
+                Your trusted source for premium WAEC, NECO, and JAMB examination
+                resources. Get authentic answers and study materials from
+                verified experts.
+              </p>
+            </div>
+          </div>
+          <div class="sidebar-card">
+            <h3>Statistics</h3>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-number" id="subjectsCount">12</div>
+                <div class="stat-label">Subjects</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="resourcesCount">85</div>
+                <div class="stat-label">Resources</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="successRate">98%</div>
+                <div class="stat-label">Success Rate</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="membersCount">312M</div>
+                <div class="stat-label">Members</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <!-- Compose Modal -->
+    <div class="compose-modal" id="composeModal">
+      <div class="compose-container">
+        <div class="compose-header">
+          <h3>Create New Resource</h3>
+          <button class="close-btn" id="closeComposeModal">&times;</button>
+        </div>
+        <div class="compose-body">
+          <form class="compose-form" id="composeForm">
+            <div class="form-group">
+              <label>Resource Content</label>
+              <div class="editor-toolbar" id="editorToolbar">
+                <button type="button" data-command="bold" title="Bold">
+                  <i class="fas fa-bold"></i>
+                </button>
+                <button type="button" data-command="italic" title="Italic">
+                  <i class="fas fa-italic"></i>
+                </button>
+                <button
+                  type="button"
+                  data-command="underline"
+                  title="Underline"
+                >
+                  <i class="fas fa-underline"></i>
+                </button>
+                <button
+                  type="button"
+                  data-command="insertUnorderedList"
+                  title="Bullet List"
+                >
+                  <i class="fas fa-list-ul"></i>
+                </button>
+                <button
+                  type="button"
+                  data-command="insertOrderedList"
+                  title="Numbered List"
+                >
+                  <i class="fas fa-list-ol"></i>
+                </button>
+                <button
+                  type="button"
+                  data-command="createLink"
+                  title="Insert Link"
+                >
+                  <i class="fas fa-link"></i>
+                </button>
+              </div>
+              <div
+                class="message-input"
+                id="composeInput"
+                contenteditable="true"
+              ></div>
+              <input
+                type="text"
+                class="image-url-input"
+                id="imageUrlInput"
+                placeholder="Paste image URL (optional)"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="compose-footer">
+          <button type="button" class="btn btn-cancel" id="cancelCompose">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-submit" id="submitPost">
+            Post Resource
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="overlay" id="overlay"></div>
-    <div class="bottom-sheet" id="auth-sheet">
-      <h2>Authentication Required</h2>
-      <input
-        type="text"
-        class="auth-input"
-        id="auth-token"
-        placeholder="Enter your authorization token"
-      />
-      <button class="auth-button" id="auth-button">Authenticate</button>
+    <!-- Image Modal -->
+    <div class="image-modal" id="imageModal">
+      <button class="image-modal-close" id="closeImageModal">&times;</button>
+      <div class="image-modal-content">
+        <img src="" alt="Enlarged view" id="modalImage" />
+      </div>
     </div>
-
-    <script
-      type="text/javascript"
-      src="//slushhelmetmirth.com/39/2a/0d/392a0d28346a0e19cd71e87eccfdecf0.js"
-    ></script>
 
     <script>
-      // Initialize Firebase with your config
+      // Firebase Configuration
       const firebaseConfig = {
         apiKey: "AIzaSyDJP2XIR51qGTLINiKvEoscYTMt11CaZ5s",
         authDomain: "paytrust-71e30.firebaseapp.com",
@@ -418,291 +951,256 @@
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
-      const messagesRef = database.ref("SuccessChat");
+      const postsRef = database.ref("SuccessChat");
 
       // DOM Elements
-      const chatContainer = document.getElementById("chat-container");
-      const messageInput = document.getElementById("message-input");
-      const sendButton = document.getElementById("send-button");
-      const inputArea = document.getElementById("input-area");
-      const authSheet = document.getElementById("auth-sheet");
-      const overlay = document.getElementById("overlay");
-      const authToken = document.getElementById("auth-token");
-      const authButton = document.getElementById("auth-button");
+      const authOverlay = document.getElementById("authOverlay");
+      const authForm = document.getElementById("authForm");
+      const authCode = document.getElementById("authCode");
+      const mainContainer = document.getElementById("mainContainer");
+      const adminBadge = document.getElementById("adminBadge");
+      const userAvatar = document.getElementById("userAvatar");
+      const newPostBtn = document.getElementById("newPostBtn");
+      const postsContainer = document.getElementById("postsContainer");
+      const composeModal = document.getElementById("composeModal");
+      const closeComposeModal = document.getElementById("closeComposeModal");
+      const cancelCompose = document.getElementById("cancelCompose");
+      const composeForm = document.getElementById("composeForm");
+      const composeInput = document.getElementById("composeInput");
+      const imageUrlInput = document.getElementById("imageUrlInput");
+      const submitPost = document.getElementById("submitPost");
+      const imageModal = document.getElementById("imageModal");
+      const modalImage = document.getElementById("modalImage");
+      const closeImageModal = document.getElementById("closeImageModal");
 
-      // Formatting Elements
-      const boldButton = document.getElementById("bold-button");
-      const italicButton = document.getElementById("italic-button");
-      const underlineButton = document.getElementById("underline-button");
-      const fontSelector = document.getElementById("font-selector");
-      const colorPicker = document.getElementById("color-picker");
-      const alignLeft = document.getElementById("align-left");
-      const alignCenter = document.getElementById("align-center");
-      const alignRight = document.getElementById("align-right");
-
-      // User variables
+      // App State
       let isAdmin = false;
-      let isAuthenticated = false;
       let currentUser = {
         id: "user_" + Math.random().toString(36).substr(2, 9),
         name: "Anonymous User",
       };
 
-      // Set placeholder text for contentEditable div
-      messageInput.dataset.placeholder = "Type a message";
+      // Authentication
+      authForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const code = authCode.value.trim();
 
-      // Add CSS for placeholder
-      const style = document.createElement("style");
-      style.textContent = `
-        [contenteditable=true]:empty:before {
-          content: attr(placeholder);
-          color: #888;
-          font-style: italic;
-        }
-      `;
-      document.head.appendChild(style);
-
-      // Show authentication bottom sheet on page load
-      window.onload = function () {
-        showAuthSheet();
-      };
-
-      // Function to show authentication bottom sheet
-      function showAuthSheet() {
-        authSheet.classList.add("show");
-        overlay.classList.add("show");
-      }
-
-      // Function to hide authentication bottom sheet
-      function hideAuthSheet() {
-        authSheet.classList.remove("show");
-        overlay.classList.remove("show");
-      }
-
-      // Authenticate user
-      authButton.addEventListener("click", function () {
-        const token = authToken.value.trim();
-
-        if (token === "ADMINGLORDVIP2025") {
+        // Check access codes
+        if (code === "ADMINGLORDVIP2025") {
+          // Admin access
           isAdmin = true;
-          isAuthenticated = true;
           currentUser.name = "Admin";
-          inputArea.classList.remove("hidden");
-          hideAuthSheet();
-          showAdminWelcomeMessage();
-        } else if (token === "GLORD2025") {
+          adminBadge.style.display = "flex";
+          userAvatar.textContent = "A";
+          newPostBtn.style.display = "flex";
+          authenticateUser();
+        } else if (code === "GLORD2025") {
+          // Regular user access
           isAdmin = false;
-          isAuthenticated = true;
-          hideAuthSheet();
-          inputArea.classList.add("hidden");
-          showUserWelcomeMessage();
+          currentUser.name = "Verified User";
+          userAvatar.textContent = "V";
+          authenticateUser();
         } else {
-          alert("Invalid token. Please try again.");
-          authToken.value = "";
-        }
-
-        // Start listening for messages
-        loadMessages();
-      });
-
-      // Check if input is empty to enable/disable send button
-      messageInput.addEventListener("input", function () {
-        if (this.textContent.trim().length > 0) {
-          sendButton.disabled = false;
-        } else {
-          sendButton.disabled = true;
+          alert(
+            "Invalid access code. Please try again or contact the administrator."
+          );
+          authCode.value = "";
+          authCode.focus();
         }
       });
 
-      // Send message when send button is clicked
-      sendButton.addEventListener("click", sendMessage);
+      function authenticateUser() {
+        authOverlay.classList.remove("active");
+        mainContainer.classList.add("active");
+        loadPosts();
 
-      // Handle Enter key for next paragraph instead of sending
-      messageInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-          // Only send if Ctrl+Enter is pressed
-          if (e.ctrlKey) {
-            e.preventDefault();
-            sendMessage();
-          }
-          // Otherwise, just let the default behavior happen (new line)
-        }
-      });
+        // Show welcome message based on user type
+        const welcomeMsg = {
+          id: "welcome_" + Date.now(),
+          senderId: "system",
+          senderName: "System",
+          text: isAdmin
+            ? "Welcome Admin! You can now create and manage resources."
+            : "Welcome to EDUMAGICIA! You now have access to premium resources.",
+          timestamp: Date.now(),
+          isAdmin: true,
+        };
 
-      // Text formatting buttons
-      boldButton.addEventListener("click", function () {
-        document.execCommand("bold", false, null);
-        this.classList.toggle("active");
-        messageInput.focus();
-      });
-
-      italicButton.addEventListener("click", function () {
-        document.execCommand("italic", false, null);
-        this.classList.toggle("active");
-        messageInput.focus();
-      });
-
-      underlineButton.addEventListener("click", function () {
-        document.execCommand("underline", false, null);
-        this.classList.toggle("active");
-        messageInput.focus();
-      });
-
-      fontSelector.addEventListener("change", function () {
-        document.execCommand("fontName", false, this.value);
-        messageInput.focus();
-      });
-
-      colorPicker.addEventListener("input", function () {
-        document.execCommand("foreColor", false, this.value);
-        messageInput.focus();
-      });
-
-      alignLeft.addEventListener("click", function () {
-        document.execCommand("justifyLeft", false, null);
-        removeActiveClassFromAlignButtons();
-        this.classList.add("active");
-        messageInput.focus();
-      });
-
-      alignCenter.addEventListener("click", function () {
-        document.execCommand("justifyCenter", false, null);
-        removeActiveClassFromAlignButtons();
-        this.classList.add("active");
-        messageInput.focus();
-      });
-
-      alignRight.addEventListener("click", function () {
-        document.execCommand("justifyRight", false, null);
-        removeActiveClassFromAlignButtons();
-        this.classList.add("active");
-        messageInput.focus();
-      });
-
-      function removeActiveClassFromAlignButtons() {
-        alignLeft.classList.remove("active");
-        alignCenter.classList.remove("active");
-        alignRight.classList.remove("active");
+        addPostToPage(welcomeMsg);
       }
 
-      // Function to send message
-      function sendMessage() {
-        // Get HTML content from contentEditable div
-        const messageHTML = messageInput.innerHTML.trim();
+      // Post Management
+      function loadPosts() {
+        postsRef.on("child_added", function (snapshot) {
+          const post = snapshot.val();
+          addPostToPage(post);
+        });
+      }
 
-        if (messageHTML.length > 0 && isAdmin) {
-          const timestamp = new Date().getTime();
+      function addPostToPage(post) {
+        // Remove empty state if it exists
+        const emptyState = postsContainer.querySelector(".empty-state");
+        if (emptyState) {
+          emptyState.remove();
+        }
 
-          messagesRef.push({
-            html: messageHTML, // Store the formatted HTML
+        const postElement = document.createElement("div");
+        postElement.className = "post";
+        postElement.dataset.id = post.id || snapshot.key;
+
+        // Format date
+        const postDate = new Date(post.timestamp);
+        const formattedDate = postDate.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        // Create post HTML
+        postElement.innerHTML = `
+                <div class="post-header">
+                    <div class="post-avatar">${post.senderName.charAt(0)}</div>
+                    <div class="post-meta">
+                        <h3>${post.senderName}</h3>
+                        <div class="post-date">${formattedDate}</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-text">${formatPostContent(post)}</div>
+                    ${
+                      post.imageUrl
+                        ? `
+                    <div class="post-image">
+                        <img src="${post.imageUrl}" alt="Resource image" class="post-image-preview">
+                    </div>
+                    `
+                        : ""
+                    }
+                </div>
+            `;
+
+        // Add image click handler if there's an image
+        if (post.imageUrl) {
+          const img = postElement.querySelector(".post-image-preview");
+          img.addEventListener("click", function () {
+            modalImage.src = this.src;
+            imageModal.classList.add("active");
+          });
+        }
+
+        // Insert new post at the top
+        postsContainer.insertBefore(postElement, postsContainer.firstChild);
+      }
+
+      function formatPostContent(post) {
+        if (post.html) {
+          return post.html;
+        } else if (post.text) {
+          // Convert line breaks to <br> tags
+          return post.text.replace(/\n/g, "<br>");
+        }
+        return "";
+      }
+
+      // Compose Post Modal
+      newPostBtn.addEventListener("click", function () {
+        composeModal.classList.add("active");
+        composeInput.focus();
+      });
+
+      closeComposeModal.addEventListener("click", function () {
+        composeModal.classList.remove("active");
+      });
+
+      cancelCompose.addEventListener("click", function () {
+        composeModal.classList.remove("active");
+      });
+
+      // Editor Toolbar
+      const toolbarButtons = document.querySelectorAll(
+        "#editorToolbar button[data-command]"
+      );
+      toolbarButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const command = this.dataset.command;
+
+          if (command === "createLink") {
+            const url = prompt("Enter the URL:");
+            if (url) {
+              document.execCommand(command, false, url);
+            }
+          } else {
+            document.execCommand(command, false, null);
+          }
+
+          composeInput.focus();
+        });
+      });
+
+      // Submit Post
+      submitPost.addEventListener("click", function () {
+        const postContent = composeInput.innerHTML.trim();
+        const imageUrl = imageUrlInput.value.trim();
+
+        if (postContent) {
+          const timestamp = Date.now();
+
+          postsRef.push({
+            html: postContent,
+            imageUrl: imageUrl || null,
             senderId: currentUser.id,
             senderName: currentUser.name,
             timestamp: timestamp,
             isAdmin: isAdmin,
           });
 
-          // Clear the input field
-          messageInput.innerHTML = "";
-          sendButton.disabled = true;
+          // Reset form
+          composeInput.innerHTML = "";
+          imageUrlInput.value = "";
+          composeModal.classList.remove("active");
 
-          // Reset formatting button states
-          boldButton.classList.remove("active");
-          italicButton.classList.remove("active");
-          underlineButton.classList.remove("active");
-          removeActiveClassFromAlignButtons();
-          alignLeft.classList.add("active");
-
-          // Scroll to bottom after sending
-          setTimeout(() => {
-            scrollToBottom();
-          }, 100);
-        }
-      }
-
-      // Function to add message to chat
-      function addMessageToChat(message) {
-        const messageElement = document.createElement("div");
-        messageElement.classList.add("message");
-
-        const isCurrentUserAdmin = message.isAdmin === true;
-
-        // Add appropriate class based on sender
-        if (isCurrentUserAdmin) {
-          messageElement.classList.add("admin-message");
+          // Scroll to top to see the new post
+          window.scrollTo(0, 0);
         } else {
-          messageElement.classList.add("user-message");
+          alert("Please enter some content for your post");
+        }
+      });
+
+      // Image Modal
+      closeImageModal.addEventListener("click", function () {
+        imageModal.classList.remove("active");
+      });
+
+      // Close modals when clicking outside
+      window.addEventListener("click", function (e) {
+        if (e.target === composeModal) {
+          composeModal.classList.remove("active");
+        }
+        if (e.target === imageModal) {
+          imageModal.classList.remove("active");
+        }
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", function (e) {
+        // Close modals with ESC
+        if (e.key === "Escape") {
+          composeModal.classList.remove("active");
+          imageModal.classList.remove("active");
         }
 
-        // Format timestamp
-        const date = new Date(message.timestamp);
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
-        const formattedTime = `${hours}:${minutes}`;
-
-        // Create message content - use HTML if available, otherwise use text
-        if (message.html) {
-          messageElement.innerHTML = `
-                <div class="message-sender">${message.senderName}</div>
-                <div class="message-text">${message.html}</div>
-                <div class="message-time">${formattedTime}</div>
-            `;
-        } else {
-          messageElement.innerHTML = `
-                <div class="message-sender">${message.senderName}</div>
-                <div class="message-text">${formatMessageText(
-                  message.text || ""
-                )}</div>
-                <div class="message-time">${formattedTime}</div>
-            `;
+        // Submit post with Ctrl+Enter in editor
+        if (
+          e.key === "Enter" &&
+          e.ctrlKey &&
+          composeModal.classList.contains("active")
+        ) {
+          submitPost.click();
+          e.preventDefault();
         }
-
-        chatContainer.appendChild(messageElement);
-        scrollToBottom();
-      }
-
-      // Function to format message text (preserve line breaks)
-      function formatMessageText(text) {
-        return text.replace(/\n/g, "<br>");
-      }
-
-      // Function to load messages from Firebase
-      function loadMessages() {
-        messagesRef.on("child_added", function (snapshot) {
-          const message = snapshot.val();
-
-          // Only admins can send messages, but everyone can view
-          addMessageToChat(message);
-        });
-      }
-
-      // Function to scroll chat to bottom
-      function scrollToBottom() {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
-
-      // Function to show welcome message for admin
-      function showAdminWelcomeMessage() {
-        const adminWelcomeMsg = {
-          html: "<span style='color:#128c7e;'>Welcome Admin! You can now send messages to the group.<br>Use <b>Ctrl+Enter</b> to send a message.</span>",
-          senderId: "system",
-          senderName: "System",
-          timestamp: new Date().getTime(),
-          isAdmin: true,
-        };
-        addMessageToChat(adminWelcomeMsg);
-      }
-
-      // Function to show welcome message for regular user
-      function showUserWelcomeMessage() {
-        const userWelcomeMsg = {
-          html: "<span style='color:#128c7e;'>Welcome to EDUMAGICIA group! You can view admin messages here.</span>",
-          senderId: "system",
-          senderName: "System",
-          timestamp: new Date().getTime(),
-          isAdmin: true,
-        };
-        addMessageToChat(userWelcomeMsg);
-      }
+      });
     </script>
   </body>
 </html>

@@ -571,6 +571,8 @@
         border-radius: var(--radius);
         font-size: 1rem;
         resize: vertical;
+        overflow-y: auto;
+        max-height: 300px;
       }
 
       .compose-form .message-input:focus {
@@ -1033,6 +1035,7 @@
       function loadPosts() {
         postsRef.on("child_added", function (snapshot) {
           const post = snapshot.val();
+          post.id = snapshot.key; // Add the Firebase-generated ID to the post object
           addPostToPage(post);
         });
       }
@@ -1046,7 +1049,7 @@
 
         const postElement = document.createElement("div");
         postElement.className = "post";
-        postElement.dataset.id = post.id || snapshot.key;
+        postElement.dataset.id = post.id;
 
         // Format date
         const postDate = new Date(post.timestamp);
@@ -1060,26 +1063,26 @@
 
         // Create post HTML
         postElement.innerHTML = `
-                <div class="post-header">
-                    <div class="post-avatar">${post.senderName.charAt(0)}</div>
-                    <div class="post-meta">
-                        <h3>${post.senderName}</h3>
-                        <div class="post-date">${formattedDate}</div>
-                    </div>
-                </div>
-                <div class="post-content">
-                    <div class="post-text">${formatPostContent(post)}</div>
-                    ${
-                      post.imageUrl
-                        ? `
-                    <div class="post-image">
-                        <img src="${post.imageUrl}" alt="Resource image" class="post-image-preview">
-                    </div>
-                    `
-                        : ""
-                    }
-                </div>
-            `;
+          <div class="post-header">
+              <div class="post-avatar">${post.senderName.charAt(0)}</div>
+              <div class="post-meta">
+                  <h3>${post.senderName}</h3>
+                  <div class="post-date">${formattedDate}</div>
+              </div>
+          </div>
+          <div class="post-content">
+              <div class="post-text">${formatPostContent(post)}</div>
+              ${
+                post.imageUrl
+                  ? `
+              <div class="post-image">
+                  <img src="${post.imageUrl}" alt="Resource image" class="post-image-preview">
+              </div>
+              `
+                  : ""
+              }
+          </div>
+        `;
 
         // Add image click handler if there's an image
         if (post.imageUrl) {
@@ -1146,8 +1149,10 @@
 
         if (postContent) {
           const timestamp = Date.now();
+          const newPostRef = postsRef.push();
 
-          postsRef.push({
+          newPostRef.set({
+            id: newPostRef.key, // Store the Firebase-generated ID
             html: postContent,
             imageUrl: imageUrl || null,
             senderId: currentUser.id,
